@@ -18,6 +18,8 @@ if ($uri !== '/' && file_exists($root.$uri) && ! is_dir($root.$uri)) {
 
 $routes = [
     '#^/$#' => 'index.php',
+    '#^/api/patients/(?<clsu_id>[^/]+)/identity/?$#' => 'api/identity.php',
+    '#^/api/patients/(?<clsu_id>[^/]+)/medical-profile/?$#' => 'api/medical-profile.php',
 ];
 
 foreach ($routes as $pattern => $script) {

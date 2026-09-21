@@ -171,4 +171,44 @@ final class Database
     {
         return $pdo->query('SELECT * FROM patients ORDER BY clsu_id')->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Shapes a patients row into exactly the array Telemed's ChisClient
+     * contract expects from getIdentity(): {clsu_id, full_name, department,
+     * eligibility_status}.
+     */
+    public static function toIdentity(array $patient): array
+    {
+        return [
+            'clsu_id' => $patient['clsu_id'],
+            'full_name' => $patient['full_name'],
+            'department' => $patient['department'],
+            'eligibility_status' => $patient['eligibility_status'],
+        ];
+    }
+
+    /**
+     * Shapes a patients row into exactly the array Telemed's ChisClient
+     * contract expects from getMedicalProfile().
+     */
+    public static function toMedicalProfile(array $patient): array
+    {
+        return [
+            'clsu_id' => $patient['clsu_id'],
+            'blood_type' => $patient['blood_type'],
+            'height_cm' => $patient['height_cm'] !== null ? (int) $patient['height_cm'] : null,
+            'weight_kg' => $patient['weight_kg'] !== null ? (int) $patient['weight_kg'] : null,
+            'emergency_contact' => [
+                'name' => $patient['emergency_contact_name'],
+                'relationship' => $patient['emergency_contact_relationship'],
+                'contact_number' => $patient['emergency_contact_number'],
+            ],
+            'known_allergies' => json_decode($patient['known_allergies'] ?? '[]', true) ?? [],
+            'chronic_conditions' => json_decode($patient['chronic_conditions'] ?? '[]', true) ?? [],
+            'current_medications' => json_decode($patient['current_medications'] ?? '[]', true) ?? [],
+            'past_injuries_surgeries' => json_decode($patient['past_injuries_surgeries'] ?? '[]', true) ?? [],
+            'immunization_history' => json_decode($patient['immunization_history'] ?? '[]', true) ?? [],
+            'family_medical_history' => $patient['family_medical_history'],
+        ];
+    }
 }
