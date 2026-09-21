@@ -44,11 +44,11 @@ final class Config
 
         self::$values = [
             'app_name' => $get('APP_NAME', 'CHIS Simulation'),
-            'db_host' => $get('DB_HOST', '127.0.0.1'),
-            'db_port' => $get('DB_PORT', '3306'),
-            'db_database' => $get('DB_DATABASE', 'chis_simulation'),
-            'db_username' => $get('DB_USERNAME', 'root'),
-            'db_password' => $get('DB_PASSWORD', ''),
+            'db_host' => $get('CHIS_DB_HOST', '127.0.0.1'),
+            'db_port' => $get('CHIS_DB_PORT', '3306'),
+            'db_name' => $get('CHIS_DB_NAME', 'chis_simulation'),
+            'db_user' => $get('CHIS_DB_USER', 'root'),
+            'db_pass' => $get('CHIS_DB_PASS', ''),
             'api_key' => $get('CHIS_SIM_API_KEY', 'demo-chis-sim-key-change-me'),
             'telemed_base_url' => rtrim($get('TELEMED_BASE_URL', 'http://localhost:8000'), '/'),
             'telemed_token' => $get('TELEMED_TOKEN', ''),

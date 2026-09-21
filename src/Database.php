@@ -15,16 +15,16 @@ final class Database
 {
     public static function connect(array $config): PDO
     {
-        if (! preg_match('/^[A-Za-z0-9_]+$/', $config['db_database'])) {
-            throw new RuntimeException('DB_DATABASE must be a plain identifier (letters, digits, underscore).');
+        if (! preg_match('/^[A-Za-z0-9_]+$/', $config['db_name'])) {
+            throw new RuntimeException('CHIS_DB_NAME must be a plain identifier (letters, digits, underscore).');
         }
 
         $dsn = "mysql:host={$config['db_host']};port={$config['db_port']};charset=utf8mb4";
-        $pdo = new PDO($dsn, $config['db_username'], $config['db_password'], [
+        $pdo = new PDO($dsn, $config['db_user'], $config['db_pass'], [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         ]);
 
-        $database = $config['db_database'];
+        $database = $config['db_name'];
         $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$database}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
         $pdo->exec("USE `{$database}`");
 
