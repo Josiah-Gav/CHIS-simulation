@@ -27,9 +27,43 @@ require __DIR__.'/../partials/layout-top.php';
     </div>
 </div>
 
-<div class="card">
-    <h2>Status</h2>
-    <p class="muted">Base scaffold running. Patient roster, the inbound API, and the activity log land in the next steps.</p>
-</div>
+<h2>Patients</h2>
+<table>
+    <thead>
+        <tr><th>CLSU ID</th><th>Name</th><th>Status</th><th>Blood</th><th>Allergies</th><th>Conditions</th></tr>
+    </thead>
+    <tbody>
+    <?php foreach (Database::allPatients($pdo) as $p): ?>
+        <tr>
+            <td><?= htmlspecialchars($p['clsu_id']) ?></td>
+            <td><?= htmlspecialchars($p['full_name']) ?></td>
+            <td><span class="badge badge-ok"><?= htmlspecialchars($p['eligibility_status']) ?></span></td>
+            <td><?= htmlspecialchars($p['blood_type'] ?? '—') ?></td>
+            <td><?= htmlspecialchars(implode(', ', json_decode($p['known_allergies'] ?? '[]', true)) ?: 'None') ?></td>
+            <td><?= htmlspecialchars(implode(', ', json_decode($p['chronic_conditions'] ?? '[]', true)) ?: 'None') ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+<h2 style="margin-top:28px">Recent API activity</h2>
+<table>
+    <thead>
+        <tr><th>Time</th><th>Direction</th><th>Request</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+    <?php foreach ($recentActivity as $a): ?>
+        <tr>
+            <td><?= htmlspecialchars($a['created_at']) ?></td>
+            <td><span class="badge badge-<?= htmlspecialchars($a['direction']) ?>"><?= htmlspecialchars($a['direction']) ?></span></td>
+            <td><code><?= htmlspecialchars($a['method'].' '.$a['path']) ?></code></td>
+            <td class="<?= ($a['status_code'] ?? 500) < 400 ? 'status-ok' : 'status-error' ?>"><?= (int) $a['status_code'] ?></td>
+        </tr>
+    <?php endforeach; ?>
+    <?php if (! $recentActivity): ?>
+        <tr><td colspan="4" class="muted">No API calls yet.</td></tr>
+    <?php endif; ?>
+    </tbody>
+</table>
 
 <?php require __DIR__.'/../partials/layout-bottom.php'; ?>
